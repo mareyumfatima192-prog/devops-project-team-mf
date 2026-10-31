@@ -3,7 +3,7 @@ OUT_DIR := out
 SOURCES := $(wildcard $(SRC_DIR)/*.md)
 OUTPUTS := $(patsubst $(SRC_DIR)/%.md,$(OUT_DIR)/%.html,$(SOURCES))
 
-.PHONY: all deps build test check ci clean
+.PHONY: all deps build test package check ci clean
 
 all: ci
 
@@ -27,7 +27,10 @@ test: build
 check:
 	npm ls --all
 
-ci: clean deps check test
+ci: clean deps check test package
 
 clean:
 	rm -rf $(OUT_DIR) *.tgz
+
+package: test
+	npm pack
