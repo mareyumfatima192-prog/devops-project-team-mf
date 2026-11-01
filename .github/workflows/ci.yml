@@ -28,11 +28,7 @@ jobs:
           path: '*.tgz'
           if-no-files-found: error
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: devops-pipeline
-          path: '*.tgz'
-          if-no-files-found: error
+      
 
   audit:
     name: dependency-audit
