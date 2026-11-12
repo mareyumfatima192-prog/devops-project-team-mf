@@ -1,16 +1,52 @@
 name: CI
+
 on:
   push:
     branches: [main]
   pull_request:
+
 jobs:
-  build:
-    name: build-and-test
+  lint:
+    name: lint
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Build, test and package
-        run: make ci
+          cache: npm
+      - run: make lint
+
+  test:
+    name: test
+    needs: lint
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: make coverage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/lcov.info
+          if-no-files-found: error
+
+  package:
+    name: package
+    needs: test
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: make package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: devops-pipeline
+          path: '*.tgz'
+          if-no-files-found: error
