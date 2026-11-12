@@ -1,10 +1,12 @@
 name: CI
+
 on:
   push:
     branches: [main]
   pull_request:
+
 jobs:
-    lint:
+  lint:
     name: lint
     runs-on: ubuntu-24.04
     steps:
