@@ -3,7 +3,7 @@ OUT_DIR := out
 SOURCES := $(wildcard $(SRC_DIR)/*.md)
 OUTPUTS := $(patsubst $(SRC_DIR)/%.md,$(OUT_DIR)/%.html,$(SOURCES))
 
-.PHONY: all deps build test package check ci clean
+.PHONY: all deps build lint test package check ci clean
 
 all: ci
 
@@ -21,13 +21,16 @@ build: $(OUTPUTS)
 $(OUT_DIR)/%.html: $(SRC_DIR)/%.md package-lock.json | $(OUT_DIR) node_modules
 	npm run --silent build -- $< $@
 
+lint: node_modules
+	npm run --silent lint
+
 test: build
 	npm test --silent
 
 check:
 	npm ls --all
 
-ci: clean deps check test package
+ci: clean deps check lint test package
 
 clean:
 	rm -rf $(OUT_DIR) *.tgz
