@@ -27,13 +27,19 @@ lint: node_modules
 test: build
 	npm test --silent
 
+coverage: build
+	@mkdir -p coverage
+	node --test --experimental-test-coverage \
+	--test-reporter=spec --test-reporter-destination=stdout \
+	--test-reporter=lcov --test-reporter-destination=coverage/lcov.info
 check:
 	npm ls --all
 
 ci: clean deps check lint test package
 
+
 clean:
-	rm -rf $(OUT_DIR) *.tgz
+	rm -rf $(OUT_DIR) coverage *.tgz
 
 package: test
 	npm pack
